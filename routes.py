@@ -1,51 +1,14 @@
-from flask import Flask, request, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, jsonify, make_response,  Blueprint
 import uuid
-from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
-import datetime
-from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
+from authentication import *
+from models import *
+from app import app
 
-app = Flask(__name__)
 
-app.config['SECRET_KEY'] = '0987654321'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\KK\\Documents\\python\\api\\todo.db'
 
-db = SQLAlchemy(app)
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    public_id = db.Column(db.String(50), unique=True)
-    name = db.Column(db.String(50))
-    password = db.Column(db.String(80))
-    admin = db.Column(db.Boolean)
-
-class Todo(db.Model):
-     id = db.Column(db.Integer, primary_key="True")
-     text= db.Column(db.String(50))  
-     complete = db.Column(db.Boolean)
-     user_id = db.Column(db.Integer)
-
-def token_required(f):
-    @wraps(f) 
-    def decorated(*args, **kwargs):
-        token = None
-
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-
-        if not token:
-            return jsonify({"meassage": "Token is missing"}), 401
-
-        try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])  
-            current_user = User.query.filter_by(public_id=data['public_id']).first()
-        except:
-            return jsonify({"message": "Token is invalid"}), 401 
-
-        return f(current_user, *args, **kwargs) 
-
-    return decorated   
+#mod= Blueprint('all',__name__)
 
 @app.route('/user', methods=['GET'])
 @token_required
@@ -148,14 +111,14 @@ def login():
     user = User.query.filter_by(name=auth.username).first()
 
     if not user:
-        return make_reponse('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})
+        return make_response('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})
 
     if check_password_hash(user.password, auth.password):
         token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])    
         
         return jsonify({'token': token.decode('UTF-8')})
 
-    return make_reponse('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})   
+    return make_response('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})   
 
 @app.route('/todo', methods=['GET'])
 @token_required
@@ -173,13 +136,13 @@ def get_all_todos(current_user):
 
         output.append(todo_data)
 
-    return jsonify("todos": output )
+    return jsonify({"todos": output})
 
 @app.route('/todo/<todo_id>', methods=['GET'])
 @token_required
 def get_one_todo(current_user, todo_id):
 
-    todo = Todo.query.filter_by(id=todo_id, user.id = current_user.id).first()
+    todo = Todo.query.filter_by(id=todo_id, user_id = current_user.id).first()
 
     todo_data = {}
     todo_data['id'] = todo.id
@@ -193,7 +156,7 @@ def get_one_todo(current_user, todo_id):
 def create_todo(current_user):
     data = request.json()
 
-    new_todo = Todo(text=data['text'], complete=False, user_id = current_user.id)
+    new_todo = Todo(text=data['text'], complete=False, )
     db.session.add(new_todo)
     db.session.commit()
 
@@ -202,7 +165,7 @@ def create_todo(current_user):
 @app.route('/todo/<todo_id>', methods=['PUT'])
 @token_required
 def complete_todo(current_user,todo_id):
-    todo = Todo.query.filter_by(id=todo_id, current_user.id = user.id).first()
+    todo = Todo.query.filter_by(id = todo_id, user_id = current_user.id).first()
 
     if not todo: 
         return jsonify({'message': 'No todo found'})
@@ -215,7 +178,7 @@ def complete_todo(current_user,todo_id):
 @app.route('/todo/<todo_id>', methods=['DELETE'])
 @token_required
 def delete_todo(current_user,todo_id):
-    todo = Todo.query.filter_by(id=todo_id, current_user.id = user.id).first()
+    todo = Todo.query.filter_by(id=todo_id, user_id = current_user.id).first()
 
     if not todo: 
         return jsonify({'message': 'No todo found'})
@@ -226,5 +189,3 @@ def delete_todo(current_user,todo_id):
     return jsonify({"message": "todo item deleted"})   
 
 
-if __name__ == '__main__':
-      app.run(debug=True)
