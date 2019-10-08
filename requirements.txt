@@ -5,6 +5,7 @@ cryptography==2.7
 Flask==1.1.1
 Flask-SQLAlchemy==2.1
 flask-swagger-ui==3.20.9
+gunicorn==19.9.0
 itsdangerous==1.1.0
 Jinja2==2.10.1
 MarkupSafe==1.1.1
