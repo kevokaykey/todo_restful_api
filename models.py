@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-from app import *
+from app import app
 
-#app = Flask(__name__)
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\KK\\Documents\\python\\api\\todo.db'
+
+
+
 
 db = SQLAlchemy(app)
 

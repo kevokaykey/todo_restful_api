@@ -1,16 +1,20 @@
-from flask import Flask, request, jsonify, make_response,  Blueprint
+from flask import request, jsonify, make_response,  Blueprint
 import uuid
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash
-from authentication import *
+from authentication import token_required
 from models import *
-from app import app
+import datetime
+import os
 
 
 
-#mod= Blueprint('all',__name__)
 
-@app.route('/user', methods=['GET'])
+api_request= Blueprint('all', __name__)   #create a api_request blueprint
+
+   
+
+@api_request.route('/user', methods=['GET'])
 @token_required
 def get_all_users(current_user):
 
@@ -31,7 +35,7 @@ def get_all_users(current_user):
 
     return jsonify({'users': output})
 
-@app.route('/user/<public_id>', methods=['GET'])
+@api_request.route('/user/<public_id>', methods=['GET'])
 @token_required
 def get_one_user(current_user,public_id):
 
@@ -51,7 +55,7 @@ def get_one_user(current_user,public_id):
 
     return jsonify({"user": user_data })
 
-@app.route('/user', methods=['POST'])
+@api_request.route('/user', methods=['POST'])
 @token_required
 def create_user(current_user):
 
@@ -68,7 +72,7 @@ def create_user(current_user):
 
     return jsonify({'message':'New User created'})
 
-@app.route('/user/<public_id>', methods=['PUT'])
+@api_request.route('/user/<public_id>', methods=['PUT'])
 @token_required
 def promote_user(current_user,public_id):
 
@@ -84,7 +88,7 @@ def promote_user(current_user,public_id):
     db.session.commit()
     return jsonify({'message':'The user has been promoted'})
 
-@app.route('/user/<public_id>', methods=['DELETE'])
+@api_request.route('/user/<public_id>', methods=['DELETE'])
 @token_required
 def delete_user(current_user,public_id):
 
@@ -101,7 +105,7 @@ def delete_user(current_user,public_id):
 
     return jsonify({'message':"The user has been deleted!"}) 
 
-@app.route('/login')
+@api_request.route('/login')
 def login(): 
     auth = request.authorization  
 
@@ -114,13 +118,13 @@ def login():
         return make_response('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})
 
     if check_password_hash(user.password, auth.password):
-        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])    
+        token = jwt.encode({'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, os.getenv('SECRET_KEY'))    
         
         return jsonify({'token': token.decode('UTF-8')})
 
     return make_response('Could not verify', 401, {' WWW-Authenticate': 'Basic realm="Login required"'})   
 
-@app.route('/todo', methods=['GET'])
+@api_request.route('/todo', methods=['GET'])
 @token_required
 def get_all_todos(current_user):
 
@@ -138,7 +142,7 @@ def get_all_todos(current_user):
 
     return jsonify({"todos": output})
 
-@app.route('/todo/<todo_id>', methods=['GET'])
+@api_request.route('/todo/<todo_id>', methods=['GET'])
 @token_required
 def get_one_todo(current_user, todo_id):
 
@@ -151,7 +155,7 @@ def get_one_todo(current_user, todo_id):
 
     return jsonify({todo_data})
 
-@app.route('/todo', methods=['POST'])
+@api_request.route('/todo', methods=['POST'])
 @token_required
 def create_todo(current_user):
     data = request.json()
@@ -162,7 +166,7 @@ def create_todo(current_user):
 
     return ''
 
-@app.route('/todo/<todo_id>', methods=['PUT'])
+@api_request.route('/todo/<todo_id>', methods=['PUT'])
 @token_required
 def complete_todo(current_user,todo_id):
     todo = Todo.query.filter_by(id = todo_id, user_id = current_user.id).first()
@@ -175,7 +179,7 @@ def complete_todo(current_user,todo_id):
     
     return jsonify({'message' : 'todo item has been completed!'})
 
-@app.route('/todo/<todo_id>', methods=['DELETE'])
+@api_request.route('/todo/<todo_id>', methods=['DELETE'])
 @token_required
 def delete_todo(current_user,todo_id):
     todo = Todo.query.filter_by(id=todo_id, user_id = current_user.id).first()

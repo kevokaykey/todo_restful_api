@@ -1,0 +1,356 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "K.K",
+      "version": "1.0.0",
+      "title": "KK Swagger UI",
+      "contact": {
+        "email": "kkemboi08@gmail.com",
+        "name" : "Kevin Kemboi",
+        "URL" : ""
+            },
+      "license": {
+        "name": "MIT",
+        "url": "https://github.com/kevokaykey"
+      }
+    },
+    "schemes" : [ "http", "https" ],
+
+    "paths" : {
+
+      "/login" : {
+        "get" : {
+          "tags" : [ "User" ],
+          "summary" : "Log in user",
+          "description" : "The auth/login endpoint authenticates users to use API. The endpoint accpets two string parameters `username` and `password` as a JSON object. On successful login the user gets a JWT token, else the user will get an error response in JSON object",
+          "consumes" : [ "application/json" ],
+          "parameters" : [ {
+            "in" : "body",
+            "name" : "login",
+            "description" : "login user.",
+            "required" : false,
+            "schema" : {
+              "$ref" : "#/definitions/Login"
+            }
+          } ],
+          "responses" : {
+            "200" : {
+              "description" : "log in successful, Token generated"
+            },
+            "400" : {
+              "description" : "Invalid username supplied"
+            }
+          }
+        }
+      },
+
+      "/user" : {
+        "get" : {
+          "tags" : [ "User" ],
+          "summary" : "Get all users",
+          "description" : "This endpoint will return a json object of all users.",
+          "consumes" : [ "application/json" ],
+          "parameters" : [ {
+              "name" : "x-access-token",
+              "in" : "header",
+              "description" : "an authorization header",
+              "required" : true,
+              "type" : "string"
+              }],
+          "responses" : {
+            "200" : {
+              "description" : "return all users"
+            }
+          }
+      },
+
+    "post" : {
+      "tags" : [ "User" ],
+      "summary" : "Add a new user",
+      "description" : "This endpoint accepts user details in a json objects, creates a user and returns a json response Auth token is required to add a user",
+      "consumes" : [ "application/json" ],
+      "parameters" : [ {
+        "in" : "body",
+        "name" : "Add user",
+        "description" : "Add user",
+        "required" : true,
+        "schema" : {
+          "$ref" : "#/definitions/User"
+        }
+      }, {
+        "name" : "x-access-token",
+        "in" : "header",
+        "description" : "an authorization header",
+        "required" : true,
+        "type" : "string"
+      } ],
+      "responses" : {
+        "201" : {
+          "description" : "User created"
+        },
+        "401" : {
+          "description" : "Error occured"
+        }
+      }
+     }
+    },
+
+
+    "/User/{id}" : {
+      "get" : {
+        "tags" : [ "User" ],
+        "summary" : "Get a single user details",
+        "description" : "This endpoint returns a json object of a specific user",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "user_id",
+          "in" : "path",
+          "description" : "Id of user to list details for",
+          "required" : true,
+          "type" : "integer"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      
+    },
+
+    "put" : {
+      "tags" : [ "User" ],
+      "summary" : "Promote User",
+      "description" : "The reset user endpoints allows the superuser to promote a normal user to admin. This end point requires the superuser to pass an access-token header with the value of the header as the auth key received",
+      "consumes" : [ "application/json" ],
+      "parameters" : [ {
+        "in" : "body",
+        "name" : "user data",
+        "description" : "user.",
+        "required" : false,
+        "schema" : {
+          "$ref" : "#/definitions/User"
+        }
+      }, {
+        "name" : "user_id",
+        "in" : "path",
+        "description" : "Id of user to update details for",
+        "required" : true,
+        "type" : "integer"
+      }, {
+        "name" : "x-access-token",
+        "in" : "header",
+        "description" : "an authorization header",
+        "required" : true,
+        "type" : "string"
+      } ],
+      "responses" : {
+        "201" : {
+          "description" : "Promote user"
+        },
+        "401" : {
+          "description" : "Error occured"
+         }
+       }
+     },
+
+    "delete" : {
+      "tags" : [ "User" ],
+      "summary" : "Delete a user",
+      "description" : "This end point will delete a user. To delete a user you must be an admin",
+      "consumes" : [ "application/json" ],
+      "parameters" : [ {
+        "name" : "user_id",
+        "in" : "path",
+        "description" : "Id of muser to delete",
+        "required" : true,
+        "type" : "integer"
+      }, {
+        "name" : "x-access-token",
+        "in" : "header",
+        "description" : "an authorization header",
+        "required" : true,
+        "type" : "string"
+      } ],
+      "responses" : {
+        "200" : {
+          "description" : "OK"
+        }
+      }
+    }
+  },
+
+        "/Todo" : {
+          "get" : {
+            "tags" : [ "Todo" ],
+            "summary" : "Get all Todos",
+            "description" : "This endpoint will return a json object of all Todos.",
+            "consumes" : [ "application/json" ],
+            "parameters" : [ ],
+            "responses" : {
+              "200" : {
+                "description" : "return all Todos"
+              }
+            }
+        },
+
+      "post" : {
+        "tags" : [ "Todo" ],
+        "summary" : "Add a new todo",
+        "description" : "This endpoint accepts todo details in a json objects, creates a todo and returns a json response Auth token is required to add a user",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "Add Todo",
+          "description" : "Add Todo",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/Todo"
+          }
+        }, {
+          "name" : "x-access-token",
+          "in" : "header",
+          "description" : "an authorization header",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Todo created"
+          },
+          "401" : {
+            "description" : "Error occured"
+          }
+        }
+      }
+      },
+
+
+      "/todo/{id}" : {
+        "get" : {
+          "tags" : [ "Todo" ],
+          "summary" : "Get a single Todo details",
+          "description" : "This endpoint returns a json object of a specific Todo",
+          "consumes" : [ "application/json" ],
+          "parameters" : [ {
+            "name" : "Todo_id",
+            "in" : "path",
+            "description" : "Id of Todo to list details for",
+            "required" : true,
+            "type" : "integer"
+          } ],
+          "responses" : {
+            "200" : {
+              "description" : "OK"
+            },
+            "404" : {
+              "description" : "Todo not found"
+            }
+          }
+        
+      },
+
+      "put" : {
+        "tags" : [ "Todo" ],
+        "summary" : "Update Todo",
+        "description" : "This todo endpoints allows the superuser to complete a todo. This end point requires the superuser to pass an access-token header with the value of the header as the auth key received",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "Todo data",
+          "description" : "todo",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Todo"
+          }
+        }, {
+          "name" : "todo_id",
+          "in" : "path",
+          "description" : "Id of Todo to update details for",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "x-access-token",
+          "in" : "header",
+          "description" : "an authorization header",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "Complete Todo"
+          },
+          "401" : {
+            "description" : "Error occured"
+          }
+        }
+      },
+
+      "delete" : {
+        "tags" : [ "Todo" ],
+        "summary" : "Delete a Todo",
+        "description" : "This end point will delete a todo. To delete a todo you must be an admin",
+        "consumes" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "todo_id",
+          "in" : "path",
+          "description" : "Id of Todo to delete",
+          "required" : true,
+          "type" : "integer"
+        }, {
+          "name" : "x-access-token",
+          "in" : "header",
+          "description" : "an authorization header",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+     }
+    },
+      "definitions" : {
+        "Login" : {
+          "type" : "object",
+          "required" : [ "password", "username" ],
+          "properties" : {
+            "username" : {
+              "type" : "string"
+            },
+            "password" : {
+              "type" : "string"
+            }
+          }
+        },
+
+        "User" : {
+          "type" : "object",
+          "required" : ["name", "password"],
+          "properties" : {
+            "name" : {
+              "type" : "string"
+            },
+             "password" : {
+              "type" : "string"
+            }
+          }
+        },
+        "Todo" : {
+          "type" : "object",
+          "required" : [ "text" ],
+          "properties" : {
+            "name" : {
+              "type" : "string"
+            }
+          }
+        }
+
+
+
+ }
+}

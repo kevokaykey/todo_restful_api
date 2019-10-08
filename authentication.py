@@ -3,7 +3,9 @@ import jwt
 import datetime
 from functools import wraps
 from flask import Flask, request, jsonify, make_response
-from app import app
+import os
+
+
 
 def token_required(f):
     @wraps(f) 
@@ -17,7 +19,7 @@ def token_required(f):
             return jsonify({"meassage": "Token is missing"}), 401
 
         try:
-            data = jwt.decode(token, app.config['SECRET_KEY'])  
+            data = jwt.decode(token, os.getenv('SECRET_KEY'))  
             current_user = User.query.filter_by(public_id=data['public_id']).first()
         except:
             return jsonify({"message": "Token is invalid"}), 401 
