@@ -62,6 +62,7 @@
               "description" : "return all users"
             }
           }
+        }
       },
 
     "post" : {
@@ -92,7 +93,7 @@
           "description" : "Error occured"
         }
       }
-     }
+     
     },
 
 
@@ -194,6 +195,7 @@
                 "description" : "return all Todos"
               }
             }
+          
         },
 
       "post" : {
@@ -314,6 +316,7 @@
       }
      }
     },
+    
       "definitions" : {
         "Login" : {
           "type" : "object",
