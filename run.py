@@ -5,10 +5,12 @@ import os
 
 
 
+
+
 app = Flask(__name__)
 
 
-SWAGGER_URL = '/swagger'
+
 API_URL = '/static/swagger.json'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
          SWAGGER_URL,
@@ -19,9 +21,10 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
             )
 
 
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+app.register_blueprint(SWAGGERUI_BLUEPRINT)
 app.register_blueprint(api_request)
-print(os.getenv('SECRET_KEY'))
+
+
 
 if __name__ == '__main__':
       app.run(debug=True)

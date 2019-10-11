@@ -28,7 +28,7 @@ class Production(Base):
     """Configurations for Production."""
     TESTING = False
     
-    SECRET_KEY = 'kksecretkey123dd'
+    SECRET_KEY = os.getenv('SECRET')
 
 
 
