@@ -26,8 +26,8 @@ class Testing(Base):
 
 class Production(Base):
     """Configurations for Production."""
-    TESTING = False
-    
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SECRET_KEY = os.getenv('SECRET')
 
 
