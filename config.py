@@ -12,7 +12,7 @@ class Base(object):
 class Development(Base):
     """Development configurations."""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///C:\\Users\\KK\\Documents\\python\\api\\todo.db'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:28248477@localhost/flask_api'
     SECRET_KEY = os.getenv('SECRET')
 
 

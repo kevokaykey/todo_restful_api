@@ -5,7 +5,7 @@ import os
 
 
 
-
+print(os.getenv('SECRET_KEY'))
 
 app = Flask(__name__)
 

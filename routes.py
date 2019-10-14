@@ -6,7 +6,7 @@ from authentication import token_required
 from models import *
 import datetime
 import os
-
+import psycopg2 
 
 
 
@@ -62,7 +62,7 @@ def create_user(current_user):
     if not current_user.admin:
         return jsonify({"message": "Cannot perform that operation!"})
 
-    data = request.get_json()   #passes json data to the variable
+    data = request.get_json()   #passes json data to the variable and saves as data variable
 
     hashed_password = generate_password_hash(data['password'], method='sha256') #hashed password
 
