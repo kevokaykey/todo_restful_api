@@ -28,6 +28,9 @@ class Production(Base):
     """Configurations for Production."""
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    DB_NAME = os.getenv('NAME')
+    DB_USERNAME = os.getenv('USERNAME')
+    DB_PASSWORD = os.getenv('PASSWORD')
     SECRET_KEY = os.getenv('SECRET')
 
 

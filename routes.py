@@ -57,10 +57,10 @@ def get_one_user(current_user,public_id):
 
 @api_request.route('/user', methods=['POST'])
 @token_required
-def create_user(current_user):
+def create_user():
 
     if not current_user.admin:
-        return jsonify({"message": "Cannot perform that operation!"})
+       return jsonify({"message": "Cannot perform that operation!"})
 
     data = request.get_json()   #passes json data to the variable and saves as data variable
 
