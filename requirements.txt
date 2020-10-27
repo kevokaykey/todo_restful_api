@@ -1,7 +1,7 @@
 asn1crypto==0.24.0
 cffi==1.12.3
 Click==7.0
-cryptography==2.7
+cryptography==3.2
 Flask==1.1.1
 Flask-SQLAlchemy==2.1
 flask-swagger-ui==3.20.9
